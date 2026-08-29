@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Paperclip, Mic, Send, Mail, FileText } from 'lucide-react';
 import { ChatMessage, Contact } from '../types';
 
@@ -16,6 +16,11 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
   isSending = false,
 }) => {
   const [inputText, setInputText] = useState('');
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isSending]);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,6 +111,8 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
             </div>
           </div>
         )}
+
+        <div ref={bottomRef} />
       </div>
 
       {/* Input Toolbar */}
