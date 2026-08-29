@@ -8,7 +8,6 @@ import { Sidebar } from './components/Sidebar';
 import { TopNav } from './components/TopNav';
 import { ConversationsList } from './components/ConversationsList';
 import { ChatFeed } from './components/ChatFeed';
-import { ContactDetails } from './components/ContactDetails';
 import { mockContacts, mockMessages } from './data/mockData';
 import { ChatMessage } from './types';
 import { sendMessageToAgent } from './services/companyAgent';
@@ -95,9 +94,6 @@ export default function App() {
               onSendMessage={handleSendMessage}
               isSending={isSending}
             />
-
-            {/* Column 3: Contact & Info Details */}
-            <ContactDetails contact={selectedContact} />
           </div>
         </div>
       </div>
