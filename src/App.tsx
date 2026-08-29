@@ -8,7 +8,7 @@ import { Sidebar } from './components/Sidebar';
 import { TopNav } from './components/TopNav';
 import { ConversationsList } from './components/ConversationsList';
 import { ChatFeed } from './components/ChatFeed';
-import { mockContacts, mockMessages } from './data/mockData';
+import { mockContacts } from './data/mockData';
 import { ChatMessage } from './types';
 import { sendMessageToAgent } from './services/companyAgent';
 
@@ -17,7 +17,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('chat');
   const [selectedContactId, setSelectedContactId] = useState('5'); // Mary Franci
   const [searchQuery, setSearchQuery] = useState('');
-  const [messages, setMessages] = useState<ChatMessage[]>(mockMessages);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isSending, setIsSending] = useState(false);
 
   const selectedContact =
