@@ -6,18 +6,20 @@ interface ChatFeedProps {
   contact: Contact;
   messages: ChatMessage[];
   onSendMessage: (text: string) => void;
+  isSending?: boolean;
 }
 
 export const ChatFeed: React.FC<ChatFeedProps> = ({
   contact,
   messages,
   onSendMessage,
+  isSending = false,
 }) => {
-  const [inputText, setInputText] = useState('You are welcome!');
+  const [inputText, setInputText] = useState('');
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || isSending) return;
     onSendMessage(inputText);
     setInputText('');
   };
@@ -91,6 +93,19 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
             </div>
           );
         })}
+
+        {/* Typing indicator while waiting for agent reply */}
+        {isSending && (
+          <div className="flex flex-col items-end space-y-1">
+            <div className="bg-[#D5E9FF] text-[#1E293B] rounded-2xl rounded-tr-sm px-4 py-3 text-xs leading-relaxed w-fit shadow-xs">
+              <span className="inline-flex gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#1E293B]/40 animate-bounce [animation-delay:-0.3s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#1E293B]/40 animate-bounce [animation-delay:-0.15s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#1E293B]/40 animate-bounce" />
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Input Toolbar */}
@@ -122,7 +137,8 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Type your message..."
-          className="flex-1 bg-[#F4F5FA] rounded-full px-4 py-2 text-xs text-gray-800 placeholder-gray-400 outline-none focus:ring-1 focus:ring-purple-400/40 transition-all"
+          disabled={isSending}
+          className="flex-1 bg-[#F4F5FA] rounded-full px-4 py-2 text-xs text-gray-800 placeholder-gray-400 outline-none focus:ring-1 focus:ring-purple-400/40 transition-all disabled:opacity-60"
         />
 
         {/* Send Button */}
@@ -130,7 +146,8 @@ export const ChatFeed: React.FC<ChatFeedProps> = ({
           type="submit"
           id="btn-chat-send"
           aria-label="Send Message"
-          className="w-9 h-9 rounded-full bg-[#9061F9] hover:bg-[#7E4CE8] text-white flex items-center justify-center shrink-0 shadow-sm transition-transform active:scale-95"
+          disabled={isSending}
+          className="w-9 h-9 rounded-full bg-[#9061F9] hover:bg-[#7E4CE8] text-white flex items-center justify-center shrink-0 shadow-sm transition-transform active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <Send className="w-3.5 h-3.5 -translate-x-0.5 translate-y-0.5" />
         </button>

@@ -1,6 +1,6 @@
 {
-  "name": "Attmosfire",
-  "description": "Customer communication and chat dashboard pixel-perfect recreation of Attmosfire UI.",
+  "name": "InboxAI",
+  "description": "Customer communication and AI-powered chat dashboard, connected to a live n8n multi-agent backend.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

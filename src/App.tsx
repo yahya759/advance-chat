@@ -11,6 +11,7 @@ import { ChatFeed } from './components/ChatFeed';
 import { ContactDetails } from './components/ContactDetails';
 import { mockContacts, mockMessages } from './data/mockData';
 import { ChatMessage } from './types';
+import { sendMessageToAgent } from './services/companyAgent';
 
 export default function App() {
   const [activeNav, setActiveNav] = useState('all');
@@ -18,19 +19,50 @@ export default function App() {
   const [selectedContactId, setSelectedContactId] = useState('5'); // Mary Franci
   const [searchQuery, setSearchQuery] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>(mockMessages);
+  const [isSending, setIsSending] = useState(false);
 
   const selectedContact =
     mockContacts.find((c) => c.id === selectedContactId) || mockContacts[4];
 
-  const handleSendMessage = (text: string) => {
-    const newMessage: ChatMessage = {
+  const makeTime = () =>
+    new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+  // النص المكتوب هون بيتعامل معه كرسالة عميل (تجربة/محاكاة)، وبيترسل مباشرة
+  // لـ Main Agent على n8n. الرد الراجع بيظهر كرسالة وكيل آلي.
+  const handleSendMessage = async (text: string) => {
+    const customerMessage: ChatMessage = {
       id: `m_${Date.now()}`,
-      sender: 'user',
-      senderName: 'Ashly Baldwin',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+      sender: 'contact',
+      senderName: selectedContact.name,
+      avatar: selectedContact.avatar,
+      time: makeTime(),
       text,
     };
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev) => [...prev, customerMessage]);
+    setIsSending(true);
+
+    try {
+      const reply = await sendMessageToAgent(text, selectedContact.id);
+      const agentMessage: ChatMessage = {
+        id: `m_${Date.now()}_r`,
+        sender: 'user',
+        senderName: 'AI Agent',
+        time: makeTime(),
+        text: reply,
+      };
+      setMessages((prev) => [...prev, agentMessage]);
+    } catch (err) {
+      const errorMessage: ChatMessage = {
+        id: `m_${Date.now()}_e`,
+        sender: 'user',
+        senderName: 'AI Agent',
+        time: makeTime(),
+        text: 'تعذر الوصول للخدمة حالياً، حاول مرة ثانية.',
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -61,6 +93,7 @@ export default function App() {
               contact={selectedContact}
               messages={messages}
               onSendMessage={handleSendMessage}
+              isSending={isSending}
             />
 
             {/* Column 3: Contact & Info Details */}

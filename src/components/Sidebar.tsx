@@ -54,7 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeNav, setActiveNav }) => 
               </defs>
             </svg>
           </div>
-          <span className="text-[17px] font-bold tracking-tight text-white">Attmosfire</span>
+          <span className="text-[17px] font-bold tracking-tight text-white">InboxAI</span>
         </div>
 
         {/* Navigation List */}
